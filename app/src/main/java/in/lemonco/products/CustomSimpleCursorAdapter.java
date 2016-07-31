@@ -71,12 +71,15 @@ public class CustomSimpleCursorAdapter extends SimpleCursorAdapter {
             @Override
             public void onClick(View v) {
                 int quantity = Integer.parseInt(((TextView) view.findViewById(R.id.availableInventory_value)).getText().toString());
+                if(quantity==0){
+                    Toast.makeText(view.getContext(),R.string.outOfStock_warning,Toast.LENGTH_SHORT).show();
+                }else{
                 int unitSold = Integer.parseInt(((TextView) view.findViewById(R.id.unitsSold_value)).getText().toString());
                 ContentValues values = new ContentValues();
                 values.put(InventoryTable.COLUMN_QUANTITY, quantity - 1);
                 values.put(InventoryTable.COLUMN_SALES, unitSold + 1);
                 int id = (Integer) view.getTag();
-                mContext.getContentResolver().update(Uri.parse(MyInventoryContentProvider.CONTENT_URI + "/" + id), values, null, null);
+                mContext.getContentResolver().update(Uri.parse(MyInventoryContentProvider.CONTENT_URI + "/" + id), values, null, null);}
             }
         });
         return view;

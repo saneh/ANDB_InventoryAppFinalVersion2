@@ -68,17 +68,17 @@ public class InventoryDetailActivity extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (TextUtils.isEmpty(mProductName.getText().toString())) {
-                    makeToast("Product Name.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptyProductName));
                 } else if (TextUtils.isEmpty(mPrice.getText().toString())) {
-                    makeToast("Price.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptyPrice));
                 } else if (TextUtils.isEmpty(mQuantity.getText().toString())) {
-                    makeToast("Quantity.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptyQuantity));
                 } else if (TextUtils.isEmpty(mSupplier.getText().toString())) {
-                    makeToast("Supplier Name.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptySupplier));
                 } else if (TextUtils.isEmpty(mImage.getText().toString())) {
-                    makeToast("Image.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptyImage));
                 } else if (TextUtils.isEmpty(mSales.getText().toString())) {
-                    makeToast("Sales figure.Can't be blank.");
+                    makeToast(getApplicationContext().getResources().getString(R.string.toast_emptySales));
                 } else {
                     setResult(RESULT_OK);
                     finish();
@@ -92,8 +92,8 @@ public class InventoryDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(InventoryDetailActivity.this)
-                        .setTitle("Delete entry")
-                        .setMessage("Are you sure you want to delete this entry?")
+                        .setTitle(R.string.delete_entry_title)
+                        .setMessage(R.string.delete_message)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(productUri, null, null);
@@ -130,7 +130,7 @@ public class InventoryDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(InventoryDetailActivity.this);
-                builder.setTitle("Enter Quantity Received");
+                builder.setTitle(R.string.receive_shipment_msg);
 
                 // Set up the input
                 final EditText input = new EditText(InventoryDetailActivity.this);
@@ -227,7 +227,7 @@ public class InventoryDetailActivity extends Activity {
                 getContentResolver().update(productUri, values, null, null);
             }
         } catch (NumberFormatException ex) {
-            Toast.makeText(this, "Please enter numeric value for price, quantity and sales", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.toast_numberFormatException, Toast.LENGTH_LONG).show();
         }
 
 
