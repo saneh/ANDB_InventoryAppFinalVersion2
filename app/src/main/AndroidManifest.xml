@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.lemonco.todos" >
+    package="in.lemonco.products" >
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TodosOverviewActivity"
+            android:name="in.lemonco.products.ProductsOverviewActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,12 +17,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InventoryDetailActivity"
-            android:label="@string/title_activity_todo_detail" >
+            android:name="in.lemonco.products.InventoryDetailActivity"
+            android:label="@string/title_activity_todo_detail"
+            android:parentActivityName=".ProductsOverviewActivity">
         </activity>
         <provider
-            android:authorities="in.lemonco.todos.provider"
-            android:name=".MyInventoryContentProvider"></provider>
+            android:authorities="in.lemonco.products.provider"
+            android:name="in.lemonco.products.MyInventoryContentProvider"></provider>
     </application>
 
 </manifest>

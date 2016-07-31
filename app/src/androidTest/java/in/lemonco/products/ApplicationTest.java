@@ -1,4 +1,4 @@
-package in.lemonco.todos;
+package in.lemonco.products;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

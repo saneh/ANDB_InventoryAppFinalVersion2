@@ -8,13 +8,12 @@
     <string name="todo_description">Delete Todo</string>
     <string name="todo_edit_description">Description</string>
     <string name="todo_edit_confirm">Confirm</string>
-    <string name="addProductButton">ADD PRODUCT</string>
+    <string name="addProductButton">ADD NEW PRODUCT</string>
     <string name="productName">Product Name: </string>
     <string name="availableInventory">Available Inv.: </string>
     <string name="price">Price:</string>
     <string name="unitsSold">Units Sold: </string>
     <string name="title_activity_product_detail">ProductDetailActivity</string>
-    <string name="menu_delete">Delete Todo</string>
     <string name="supplier">Supplier: </string>
     <string name="image">Image: </string>
     <string name="update">UPDATE</string>
@@ -23,6 +22,7 @@
     <string name="delete">DELETE</string>
     <string name="sell">SELL</string>
     <string name="home_banner">Inventory Snapshot</string>
+    <string name="menu_delete">Delete Product</string>
 
 
 </resources>

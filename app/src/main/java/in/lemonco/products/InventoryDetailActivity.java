@@ -1,15 +1,14 @@
-package in.lemonco.todos;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.InputType;
+package in.lemonco.products;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +27,7 @@ public class InventoryDetailActivity extends Activity {
     private EditText mSupplier;
     private EditText mImage;
 
-    private Uri todoUri;
+    private Uri productUri;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -43,26 +42,24 @@ public class InventoryDetailActivity extends Activity {
         mImage = (EditText) findViewById(R.id.image_edit);
 
         Button updateButton = (Button) findViewById(R.id.updateButton);
-        Button sellButton = (Button)findViewById(R.id.sellButton);
-        Button deleteButton = (Button)findViewById(R.id.deleteButton);
-        Button receiveShipmentButton = (Button)findViewById(R.id.receive_shipment_button);
-        Button orderShipmentButton = (Button)findViewById(R.id.orderShipmentButton);
+        Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        Button receiveShipmentButton = (Button) findViewById(R.id.receive_shipment_button);
+        Button orderShipmentButton = (Button) findViewById(R.id.orderShipmentButton);
 
         Bundle extras = getIntent().getExtras();
 
         // check from the saved Instance
-        todoUri = (bundle == null) ? null : (Uri) bundle
+        productUri = (bundle == null) ? null : (Uri) bundle
                 .getParcelable(MyInventoryContentProvider.CONTENT_ITEM_TYPE);
 
         // Or passed from the other activity
         if (extras != null) {
-            todoUri = extras
+            productUri = extras
                     .getParcelable(MyInventoryContentProvider.CONTENT_ITEM_TYPE);
 
-            fillData(todoUri);
-        }else {
+            fillData(productUri);
+        } else {
             //Make sell, delete, receiveShipment and orderShipment button Invisible
-            sellButton.setVisibility(View.GONE);
             deleteButton.setVisibility(View.GONE);
             receiveShipmentButton.setVisibility(View.GONE);
             orderShipmentButton.setVisibility(View.GONE);
@@ -71,17 +68,17 @@ public class InventoryDetailActivity extends Activity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (TextUtils.isEmpty(mProductName.getText().toString())) {
-                    makeToastProductName();
+                    makeToast("Product Name.Can't be blank.");
                 } else if (TextUtils.isEmpty(mPrice.getText().toString())) {
-                    makeToastPrice();
+                    makeToast("Price.Can't be blank.");
                 } else if (TextUtils.isEmpty(mQuantity.getText().toString())) {
-                    makeToastQuantity();
+                    makeToast("Quantity.Can't be blank.");
                 } else if (TextUtils.isEmpty(mSupplier.getText().toString())) {
-                    makeToastSupplier();
+                    makeToast("Supplier Name.Can't be blank.");
                 } else if (TextUtils.isEmpty(mImage.getText().toString())) {
-                    makeToastImage();
+                    makeToast("Image.Can't be blank.");
                 } else if (TextUtils.isEmpty(mSales.getText().toString())) {
-                    makeToastSales();
+                    makeToast("Sales figure.Can't be blank.");
                 } else {
                     setResult(RESULT_OK);
                     finish();
@@ -90,15 +87,6 @@ public class InventoryDetailActivity extends Activity {
 
         });
 
-
-        //Sell button reduces Quantity by 1 and updates the value in database
-        sellButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mQuantity.setText(String.valueOf(Integer.parseInt(mQuantity.getText().toString())-1));
-                saveState();
-            }
-        });
         //delete buttons deletes the particular record after user confirmation
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +96,7 @@ public class InventoryDetailActivity extends Activity {
                         .setMessage("Are you sure you want to delete this entry?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                getContentResolver().delete(todoUri, null, null);
+                                getContentResolver().delete(productUri, null, null);
                                 finish();
                             }
                         })
@@ -128,11 +116,11 @@ public class InventoryDetailActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/html");
                 String productName = mProductName.getText().toString();
-                intent.putExtra(Intent.EXTRA_EMAIL,mSupplier.getText().toString());
+                intent.putExtra(Intent.EXTRA_EMAIL, mSupplier.getText().toString());
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Request for order of item: " + productName);
-                intent.putExtra(Intent.EXTRA_TEXT, "Hi \n Kindly priority dispatch new order of following item\n" + productName);
+                intent.putExtra(Intent.EXTRA_TEXT, "Hi \n Kindly dispatch new order of following item\n" + productName);
 
-                startActivity(Intent.createChooser(intent,"Send Email"));
+                startActivity(Intent.createChooser(intent, "Send Email"));
 
             }
         });
@@ -154,7 +142,7 @@ public class InventoryDetailActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int shipmentQuantity = Integer.parseInt(input.getText().toString());
-                        mQuantity.setText(String.valueOf(Integer.parseInt(mQuantity.getText().toString())+shipmentQuantity));
+                        mQuantity.setText(String.valueOf(Integer.parseInt(mQuantity.getText().toString()) + shipmentQuantity));
                         saveState();
                     }
                 });
@@ -172,7 +160,7 @@ public class InventoryDetailActivity extends Activity {
     }
 
     private void fillData(Uri uri) {
-        String[] projection = { InventoryTable.COLUMN_NAME, InventoryTable.COLUMN_SALES, InventoryTable.COLUMN_PRICE, InventoryTable.COLUMN_QUANTITY, InventoryTable.COLUMN_SUPPLIER, InventoryTable.COLUMN_IMAGE };
+        String[] projection = {InventoryTable.COLUMN_NAME, InventoryTable.COLUMN_SALES, InventoryTable.COLUMN_PRICE, InventoryTable.COLUMN_QUANTITY, InventoryTable.COLUMN_SUPPLIER, InventoryTable.COLUMN_IMAGE};
         Cursor cursor = getContentResolver().query(uri, projection, null, null,
                 null);
         if (cursor != null) {
@@ -198,7 +186,7 @@ public class InventoryDetailActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putParcelable(MyInventoryContentProvider.CONTENT_ITEM_TYPE, todoUri);
+        outState.putParcelable(MyInventoryContentProvider.CONTENT_ITEM_TYPE, productUri);
     }
 
     @Override
@@ -218,7 +206,7 @@ public class InventoryDetailActivity extends Activity {
         // only save if either summary or description
         // is available
 
-        if (productName.length() == 0 || price.length() == 0 || quantity.length()==0 || supplier.length()==0 ||sales.length()==0) {
+        if (productName.length() == 0 || price.length() == 0 || quantity.length() == 0 || supplier.length() == 0 || sales.length() == 0) {
             return;
         }
 
@@ -230,49 +218,25 @@ public class InventoryDetailActivity extends Activity {
             values.put(InventoryTable.COLUMN_SALES, Integer.parseInt(sales));
             values.put(InventoryTable.COLUMN_SUPPLIER, supplier);
             values.put(InventoryTable.COLUMN_IMAGE, image);
-            if (todoUri == null) {
-                // New todo
-                todoUri = getContentResolver().insert(
+            if (productUri == null) {
+                // New product
+                productUri = getContentResolver().insert(
                         MyInventoryContentProvider.CONTENT_URI, values);
             } else {
-                // Update todo
-                getContentResolver().update(todoUri, values, null, null);
+                // Update product
+                getContentResolver().update(productUri, values, null, null);
             }
-        }catch(NumberFormatException ex){
-            Toast.makeText(this,"Please enter numeric value for price, quantity and sales",Toast.LENGTH_LONG).show();
+        } catch (NumberFormatException ex) {
+            Toast.makeText(this, "Please enter numeric value for price, quantity and sales", Toast.LENGTH_LONG).show();
         }
 
 
-
-    }
-    //methods to validate input text
-    private void makeToastProductName(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter product name",
-                Toast.LENGTH_LONG).show();
-    }
-    private void makeToastPrice(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter price",
-                Toast.LENGTH_LONG).show();
-    }
-    private void makeToastQuantity(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter quantity.",
-                Toast.LENGTH_LONG).show();
-    }
-    private void makeToastSupplier(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter supplier e-mail.",
-                Toast.LENGTH_LONG).show();
-    }
-    private void makeToastImage(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter product image.",
-                Toast.LENGTH_LONG).show();
-    }
-    private void makeToastSales(){
-        Toast.makeText(InventoryDetailActivity.this, "Please enter a valid sales figure. For no sales input 0",
-                Toast.LENGTH_LONG).show();
     }
 
-
-
+    //method to validate input text
+    private void makeToast(String field){
+       Toast.makeText(InventoryDetailActivity.this,"Please enter a valid "+field,Toast.LENGTH_SHORT).show();
+    }
 
 
 }

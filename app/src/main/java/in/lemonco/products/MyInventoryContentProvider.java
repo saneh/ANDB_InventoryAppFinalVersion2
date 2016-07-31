@@ -1,7 +1,4 @@
-package in.lemonco.todos;
-
-import java.util.Arrays;
-import java.util.HashSet;
+package in.lemonco.products;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -13,31 +10,35 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class MyInventoryContentProvider extends ContentProvider {
 
     // database
     private InventoryDatabaseHelper database;
 
     // used for the UriMacher
-    private static final int TODOS = 10;
-    private static final int TODO_ID = 20;
+    private static final int PRODUCTS = 10;
+    private static final int PRODUCTS_ID = 20;
 
-    private static final String AUTHORITY = "in.lemonco.todos.provider";
+    private static final String AUTHORITY = "in.lemonco.products.provider";
 
-    private static final String BASE_PATH = "todos";
+    private static final String BASE_PATH = "products";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/" + BASE_PATH);
 
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-            + "/todos";
+            + "/products";
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-            + "/todo";
+            + "/product";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
+
     static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, TODOS);
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TODO_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH, PRODUCTS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", PRODUCTS_ID);
     }
 
     @Override
@@ -50,20 +51,20 @@ public class MyInventoryContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        // Uisng SQLiteQueryBuilder instead of query() method
+        // Using SQLiteQueryBuilder instead of query() method
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         // check if the caller has requested a column which does not exists
         checkColumns(projection);
 
         // Set the table
-        queryBuilder.setTables(InventoryTable.TABLE_TODO);
+        queryBuilder.setTables(InventoryTable.TABLE_NAME);
 
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
-            case TODOS:
+            case PRODUCTS:
                 break;
-            case TODO_ID:
+            case PRODUCTS_ID:
                 // adding the ID to the original query
                 queryBuilder.appendWhere(InventoryTable.COLUMN_ID + "="
                         + uri.getLastPathSegment());
@@ -92,8 +93,8 @@ public class MyInventoryContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         long id = 0;
         switch (uriType) {
-            case TODOS:
-                id = sqlDB.insert(InventoryTable.TABLE_TODO, null, values);
+            case PRODUCTS:
+                id = sqlDB.insert(InventoryTable.TABLE_NAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -108,20 +109,20 @@ public class MyInventoryContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
         switch (uriType) {
-            case TODOS:
-                rowsDeleted = sqlDB.delete(InventoryTable.TABLE_TODO, selection,
+            case PRODUCTS:
+                rowsDeleted = sqlDB.delete(InventoryTable.TABLE_NAME, selection,
                         selectionArgs);
                 break;
-            case TODO_ID:
+            case PRODUCTS_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsDeleted = sqlDB.delete(
-                            InventoryTable.TABLE_TODO,
+                            InventoryTable.TABLE_NAME,
                             InventoryTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
                     rowsDeleted = sqlDB.delete(
-                            InventoryTable.TABLE_TODO,
+                            InventoryTable.TABLE_NAME,
                             InventoryTable.COLUMN_ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
@@ -142,21 +143,21 @@ public class MyInventoryContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsUpdated = 0;
         switch (uriType) {
-            case TODOS:
-                rowsUpdated = sqlDB.update(InventoryTable.TABLE_TODO,
+            case PRODUCTS:
+                rowsUpdated = sqlDB.update(InventoryTable.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
                 break;
-            case TODO_ID:
+            case PRODUCTS_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = sqlDB.update(InventoryTable.TABLE_TODO,
+                    rowsUpdated = sqlDB.update(InventoryTable.TABLE_NAME,
                             values,
                             InventoryTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
-                    rowsUpdated = sqlDB.update(InventoryTable.TABLE_TODO,
+                    rowsUpdated = sqlDB.update(InventoryTable.TABLE_NAME,
                             values,
                             InventoryTable.COLUMN_ID + "=" + id
                                     + " and "
@@ -172,7 +173,7 @@ public class MyInventoryContentProvider extends ContentProvider {
     }
 
     private void checkColumns(String[] projection) {
-        String[] available = { InventoryTable.COLUMN_SALES, InventoryTable.COLUMN_SUPPLIER, InventoryTable.COLUMN_QUANTITY, InventoryTable.COLUMN_PRICE, InventoryTable.COLUMN_IMAGE, InventoryTable.COLUMN_NAME, InventoryTable.COLUMN_ID };
+        String[] available = {InventoryTable.COLUMN_SALES, InventoryTable.COLUMN_SUPPLIER, InventoryTable.COLUMN_QUANTITY, InventoryTable.COLUMN_PRICE, InventoryTable.COLUMN_IMAGE, InventoryTable.COLUMN_NAME, InventoryTable.COLUMN_ID};
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(
                     Arrays.asList(projection));

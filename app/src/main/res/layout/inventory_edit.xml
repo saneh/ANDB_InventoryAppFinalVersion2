@@ -11,14 +11,6 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="@string/sell"
-            android:id="@+id/sellButton"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/delete"
             android:id="@+id/deleteButton"
